@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { LoginForm } from "./components/LoginForm";
+import Logout from "./components/Logout";
+import Header from "./components/Header"
 
 type Product = {
   id: number;
-  name: string;
-  price: number;
+  company: string;
+  occupation: string;
 };
 
 
@@ -16,9 +18,17 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+  if (token) {
+    setLoggedIn(true);
+  }
+  },[])
+
 
   useEffect(() => {
-    if (!loggedIn) return;    //ログインされてなかったら弾く
+    if (!loggedIn) return; 
+       //ログインされてなかったら弾く
     const fetchProducts = async () => {
       try {
         const res = await fetch("http://localhost:8080/products");
@@ -34,6 +44,7 @@ export default function App() {
   }, [loggedIn]);
 
 
+
   if (!loggedIn) {
     return <LoginForm onLoginSuccess={() => setLoggedIn(true)} />;
   }
@@ -47,19 +58,26 @@ export default function App() {
     );
 
   return (
+    <>
+      <Header />
     <div className="container">
-      <h1 className="title">🛒 商品一覧</h1>
+      <Logout auth={() => {
+        localStorage.removeItem("token");
+        setLoggedIn(false);
+      }}/>
+      <h1 className="title">🏢 インターンシップ先</h1>
       <div className="card-container">
         {products.map((product) => (
           <div key={product.id} className="card">
-            <h2 className="product-name">{product.name}</h2>
+            <h2 className="product-name">{product.company}</h2>
             <p className="product-price">
-              ¥{product.price.toLocaleString()}
+              {product.occupation}
             </p>
-            <button className="button">カートに追加</button>
+            <button className="button">詳細</button>
           </div>
         ))}
       </div>
     </div>
+    </>
   );
 }

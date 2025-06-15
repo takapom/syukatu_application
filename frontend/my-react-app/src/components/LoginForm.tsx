@@ -17,9 +17,9 @@ export function LoginForm({ onLoginSuccess }: { onLoginSuccess: () => void }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
       const data = await res.json();
       if (res.ok) {
+        localStorage.setItem("token", data.token)
         onLoginSuccess();
         return;
       } else {

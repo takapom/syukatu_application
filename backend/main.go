@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -8,28 +9,39 @@ import (
 )
 
 func main() {
+	// ① DB 接続＆マイグレーション
+	db, err := openGormDB()
+	if err != nil {
+		log.Fatalf("DB 接続エラー: %v", err)
+	}
+
+	// ② Gin ルーター初期化
 	r := gin.Default()
-	// CORS 設定…
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{"*"}, // 許可するオリジン
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	// ③ 認証不要ルート
+	r.POST("/register", registerHandler(db))
+	r.POST("/login", loginHandler(db))
 
-	// Auth
-	r.POST("/login", Login)
+	// ④ 認証ミドルウェアの適用
+	auth := r.Group("/")
+	auth.Use(authMiddleware())
 
-	// Products
-	r.GET("/products", listProducts)
-	r.GET("/products/:id", getProduct)
+	// ⑤ CompanyList 用 CRUD
+	auth.POST("/company_lists", createCompanyListHandler(db))
+	auth.GET("/company_lists", listCompanyListsHandler(db))
+	auth.PUT("/company_lists/:id", updateCompanyListHandler(db))
+	auth.DELETE("/company_lists/:id", deleteCompanyListHandler(db))
 
-	// Cart
-	r.POST("/cart", addToCart)
-	r.GET("/cart/:userID", viewCart)
-	r.POST("/checkout/:userID", checkout)
-
-	r.Run(":8080")
+	// ⑥ サーバ起動
+	log.Println("Server running on :8080")
+	if err := r.Run(":8080"); err != nil {
+		log.Fatalf("サーバ起動エラー: %v", err)
+	}
 }

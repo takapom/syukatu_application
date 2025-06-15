@@ -86,5 +86,5 @@ func deleteCompanyList(
 	id uint,
 	userID uint,
 ) error {
-	return db.Where("id = ? AND user_id = ?,", id, userID).Delete(&CompanyList{}).Error
+	return db.Where("id = ? AND user_id = ?", id, userID).Delete(&CompanyList{}).Error
 }

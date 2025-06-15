@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -76,6 +77,7 @@ func loginHandler(db *gorm.DB) gin.HandlerFunc {
 		}
 		token, err := GenerateJWT(u.ID)
 		if err != nil {
+			log.Printf("[login] GenerateJWT error: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "token error"})
 			return
 		}

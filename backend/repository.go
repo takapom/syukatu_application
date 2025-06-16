@@ -12,7 +12,6 @@ func createUser(db *gorm.DB, email, pwHash string) (*User, error) {
 }
 
 // とあるユーザーの全タスクをまとめて取得
-// listCompanyLists retrieves all CompanyList entries belonging to the given user.
 func listCompanyLists(db *gorm.DB, userID uint) ([]CompanyList, error) {
 	var lists []CompanyList
 	// WHERE user_id = ? で自分のレコードだけを絞り込み、Find で全件取得

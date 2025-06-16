@@ -1,13 +1,10 @@
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+// app/layout.tsx の例
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        {children}
-      </body>
+    <html lang="ja">
+      <body>{children}</body>
     </html>
   );
 }

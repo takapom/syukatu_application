@@ -2,50 +2,37 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from "react"
-import { LoginResponse } from '@/types';
 import styles from '@/styles/LoginForm.module.css';
+import { useLogin } from '@/hooks/use/useLogin';
 
 export default function LoginForm(){
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const router = useRouter();
+    const {
+      email, 
+      setEmail, 
+      password, 
+      setPassword, 
+      error, 
+      loading, 
+      handleSubmit  
+    } = useLogin();
 
     //トークンを残したいのでuseEffectを採用
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token){
-            router.push('/companylists')
+            router.push('/')
         }
     }, [router])
 
-    const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+    //e.preventDefault()を使ってリロードを防ぐ
+    //e.preventDefault()を使うためにはeが必要なのでonsubmitを噛ませている
+    const onSubmit = async (e: React.FormEvent): Promise<void> => {
+      //リロードを防ぐ
         e.preventDefault();
-        setError('');
-        setLoading(true);
-        try {
-        const res = await fetch('http://localhost:8080/login',{
-            method: "POST",
-            headers: {'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
-        const data: LoginResponse = await res.json();
-        if (!res.ok) {throw new Error(data.error ?? 'ログインに失敗しました');
-        }
-        localStorage.setItem('token', data.token);
-        router.push('/companylists');
-    }catch(err: unknown){
-     if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError(String(err));
-      }
-    } finally {
-      setLoading(false);
+        await handleSubmit({ email, password });
     }
-};
 
    return (
     <div className={styles.container}>
@@ -70,7 +57,7 @@ export default function LoginForm(){
           <p className={styles.subtitle}>アカウントにログインしてください</p>
         </div>
         
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={onSubmit} className={styles.form}>
           <div className={styles.inputGroup}>
             <label htmlFor="email" className={styles.label}>メールアドレス</label>
             <div className={styles.inputWrapper}>
@@ -151,7 +138,7 @@ export default function LoginForm(){
         
         <div className={styles.cardFooter}>
           <p className={styles.footerText}>
-            アカウントをお持ちでない方は <a href="#" className={styles.link}>新規登録</a>
+            アカウントをお持ちでない方は <a href="/user_regist/newuser" className={styles.link}>新規登録</a>
           </p>
         </div>
       </div>

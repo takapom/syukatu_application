@@ -179,3 +179,110 @@ func deleteCompanyListHandler(db *gorm.DB) gin.HandlerFunc {
 		c.Status(http.StatusNoContent)
 	}
 }
+
+
+//インターンシップ作成handler処理
+func createInternshipHandler(db *gorm.DB) gin.HandlerFunc {
+    type req struct {
+        Title       string `json:"title" binding:"required"`
+        Company     string `json:"company" binding:"required"`
+        Dailystart  int    `json:"dailystart" binding:"required"`
+        Dailyfinish int    `json:"dailyfinish" binding:"required"`
+        Content     string `json:"content"`
+        Selection   string `json:"selection" binding:"required"`
+        Joined      bool   `json:"joined"`
+    }
+    return func(c *gin.Context) {
+        userID := c.GetUint("userID")
+        var body req
+        if err := c.ShouldBindJSON(&body); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+        i, err := createInternship(
+            db,
+            userID,
+            body.Title,
+            body.Company,
+            body.Dailystart,
+            body.Dailyfinish,
+            body.Content,
+            body.Selection,
+            body.Joined,
+        )
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+        c.JSON(http.StatusCreated, i)
+    }
+}
+
+//インターンシップ更新handler処理
+func updateInternshipHandler(db *gorm.DB) gin.HandlerFunc {
+    type req struct {
+        Title       string `json:"title" binding:"required"`
+        Company     string `json:"company" binding:"required"`
+        Dailystart  int    `json:"dailystart" binding:"required"`
+        Dailyfinish int    `json:"dailyfinish" binding:"required"`
+        Content     string `json:"content"`
+        Selection   string `json:"selection" binding:"required"`
+        Joined      bool   `json:"joined"`
+	}
+    
+    return func(c *gin.Context) {
+        userID := c.GetUint("userID")
+        var body req
+        if err := c.ShouldBindJSON(&body); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+        var id uint
+        fmt.Sscanf(c.Param("id"), "%d", &id)
+        if err := updateInternship(
+            db,
+            id,
+            userID,
+            body.Title,
+            body.Company,
+            body.Dailystart,
+            body.Dailyfinish,
+            body.Content,
+            body.Selection,
+            body.Joined,
+        ); err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+        c.Status(http.StatusNoContent)
+    }
+}
+
+
+//インターンシップ一覧handler処理
+func listInternshipsHandler(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userID := c.GetUint("userID")  // コンテキストからuserIDを取得
+		list, err := listInternships(db, userID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, list)
+	}
+}
+
+//インターンシップ削除handler処理
+func deleteInternshipHandler(db *gorm.DB) gin.HandlerFunc{
+	return func(c *gin.Context){
+		userID := c.GetUint("userID")
+		var id uint
+		fmt.Sscanf(c.Param("id"), "%d", &id)
+		//repositoryのdeleteInternshipを呼び出し処理
+		if err := deleteInternship(db, id, userID); err != nil{
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.Status(http.StatusNoContent)
+	}
+}

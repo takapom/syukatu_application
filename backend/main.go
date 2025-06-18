@@ -25,21 +25,28 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	// ③ 認証不要ルート
+	// 認証不要ルート
 	r.POST("/register", registerHandler(db))
 	r.POST("/login", loginHandler(db))
 
-	// ④ 認証ミドルウェアの適用
+	// 認証ミドルウェアの適用
 	auth := r.Group("/")
 	auth.Use(authMiddleware())
 
-	// ⑤ CompanyList 用 CRUD
+	// CompanyList 用 CRUD
 	auth.POST("/company_lists", createCompanyListHandler(db))
 	auth.GET("/company_lists", listCompanyListsHandler(db))
 	auth.PUT("/company_lists/:id", updateCompanyListHandler(db))
 	auth.DELETE("/company_lists/:id", deleteCompanyListHandler(db))
 
-	// ⑥ サーバ起動
+	// インターンシップ用 CRUD
+	auth.POST("/internships", createInternshipHandler(db))
+	auth.GET("/internships", listInternshipsHandler(db))
+	auth.PUT("/internships/:id", updateInternshipHandler(db))
+	auth.DELETE("/internships/:id", deleteInternshipHandler(db))
+
+
+	// サーバ起動
 	log.Println("Server running on :8080")
 	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("サーバ起動エラー: %v", err)

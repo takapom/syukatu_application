@@ -1,3 +1,5 @@
+//企業リスト追加ページ
+
 "use client"
 
 import { useEffect, useState } from 'react';
@@ -54,13 +56,13 @@ export default function InputCompanyList() {
         checkToken();
 
         // 5秒ごとにトークンをチェック
-        const interval = setInterval(checkToken, 5000);
+        const interval = setInterval(checkToken, 8000);
 
         // クリーンアップ
         return () => clearInterval(interval);
     }, [router]);
 
-    //入力値の値を変更する関数
+    //入力値の値を変更する関数かつバリデーション走らせる
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         setFormData(prev => ({

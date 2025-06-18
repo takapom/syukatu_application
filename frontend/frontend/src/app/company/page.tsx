@@ -1,3 +1,5 @@
+//企業リスト表示ページ
+
 "use client"
 
 import useCompany from "@/hooks/get/useCompany"
@@ -30,7 +32,7 @@ export default function Company() {
 
   return (
     <>
-          <Header />
+    <Header />
     <div className={styles.background}>
       <div className={styles.container}>
         <h1 className={styles.title}>企業リスト</h1>

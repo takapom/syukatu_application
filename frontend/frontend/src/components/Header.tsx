@@ -48,14 +48,14 @@ export default function NavBar() {
               インターンリスト
             </Link>
             <Link
-              href="/careers"
+              href="/analysis"
               className={styles.navItem}
               onClick={() => setOpen(false)}
             >
               自己分析
             </Link>
             <Link
-              href="/english"
+              href="/"
               className={styles.navItem}
               onClick={() => setOpen(false)}
             >

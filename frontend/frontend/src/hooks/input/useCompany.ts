@@ -25,7 +25,7 @@ export const useCompanyList = (): UseCompanyListReturn => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        throw new Error('ログインが必要です');
+      throw new Error('ログインしてください！');
       }
 
       const response = await fetch('http://localhost:8080/company_lists', {

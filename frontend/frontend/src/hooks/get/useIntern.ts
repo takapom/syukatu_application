@@ -31,7 +31,7 @@ interface ResponseIntern{
 export default function useIntern(){
     const [internships, setInternships] = useState<Intern[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     const fetchInternships = async () => {
@@ -42,7 +42,6 @@ export default function useIntern(){
                 throw new Error("もう一度ログインをしてください！");
             }
             const res = await fetch("http://localhost:8080/internships",{
-            method: "GET",
             headers:{
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"

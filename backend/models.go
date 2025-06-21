@@ -23,15 +23,15 @@ type CompanyList struct {
 	UserID     uint `gorm:"index;not null"`
 }
 
-//後々にインターンモデルも作成予定(モデル名Internship)
+// 後々にインターンモデルも作成予定(モデル名Internship)
 type Internship struct {
 	gorm.Model
-	Title string
-	Company string
-	Dailystart int
+	Title       string
+	Company     string
+	Dailystart  int
 	Dailyfinish int
-	Content string
-	Selection string
-	Joined bool
-	UserID uint `gorm:"index;not null"`
+	Content     string
+	Selection   string
+	Joined      bool
+	UserID      uint `gorm:"index;not null"`
 }

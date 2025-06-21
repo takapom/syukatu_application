@@ -103,6 +103,7 @@ func createInternship(
     joined bool,
 ) (*Internship, error) {
 	i := &Internship{
+		UserID: userID,
 		Title: title,
 		Company: company,
 		Dailystart: dailystart,

@@ -78,7 +78,7 @@ export default function InputCompanyList() {
     // 3. handleSubmit関数の修正
     const handleSubmit = async (date: CompanyListDate) => {
         try {
-            // 送信前に数値型であることを確認
+            // 送信前に数値型であることを確認(バリデーション)
             const submitData = {
                 ...date,
                 member: Number(date.member) || 1  // 確実に数値型に変換

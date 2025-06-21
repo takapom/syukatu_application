@@ -61,6 +61,13 @@ export default function NavBar() {
             >
               就活掲示板
             </Link>
+            <Link
+              href="/"
+              className={styles.navItem}
+              onClick={() => setOpen(false)}
+            >
+              設定
+            </Link>
           </div>
         </div>
       </div>
